@@ -1,12 +1,46 @@
-# coding=utf-8
-# 椅子2
-import socket
-address = ('255.255.255.255',8344)#要连接的椅子1的ip
-s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-s.connect(address)
 
-while 1:
-		str = input('Please input :')
-		strInput=str.encode('utf-8')
-		s.send(strInput)
-		print("send success")
+from socket import *
+
+ 
+
+HOST = '<broadcast>'
+
+PORT = 21567
+
+BUFSIZE = 1024
+
+ 
+
+ADDR = (HOST, PORT)
+
+ 
+
+udpCliSock = socket(AF_INET, SOCK_DGRAM)
+
+udpCliSock.bind(('', 0))
+
+udpCliSock.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+
+while True:
+
+    data = input('>')
+
+    if not data:
+
+        break
+
+    print ("sending -> %s"%data)
+
+    udpCliSock.sendto(data.encode('utf-8'),ADDR)
+
+##    data,ADDR = udpCliSock.recvfrom(BUFSIZE)
+
+##    if not data:
+
+##        break
+
+##    print data
+
+ 
+
+udpCliSock.close()

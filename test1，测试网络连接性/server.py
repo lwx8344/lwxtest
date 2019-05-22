@@ -1,7 +1,7 @@
 # coding=utf-8
-#妞呭瓙1娴嬭瘯绋嬪簭
+#server服务器
 import socket
-address = ('0.0.0.0',9996)#0000琛ㄧず鎺ユ敹鎵�鏈塱p鍦板潃鍙戣繃鏉ョ殑娑堟伅
+address = ('0.0.0.0',9996)#本主机IP
 s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 s.bind(address)
 

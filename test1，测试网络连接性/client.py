@@ -1,7 +1,7 @@
 # coding=utf-8
-# 妞呭瓙2
+#client客户端
 import socket
-address = ('127.0.0.1',9996)#瑕佽繛鎺ョ殑妞呭瓙1鐨刬p
+address = ('127.0.0.1',9996)#主机IP
 s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 s.connect(address)
 

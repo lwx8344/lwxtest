@@ -10,9 +10,14 @@ import schedule
 import time
 import threading
 import socket
+import RPi.GPIO as GPIO 
 #以上为使用的库
-
-
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(20,GPIO.OUT)
+GPIO.setup(21,GPIO.OUT)
+GPIO.output(20, GPIO.LOW)
+GPIO.output(21, GPIO.LOW)
+GPIO.setup(16,GPIO.IN)
 address = ('0.0.0.0',9999)#接收所有ip发过来的udp信息。
 s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 s.bind(address)
@@ -34,6 +39,9 @@ emotionnum = 0
 global flag
 flag = 0
 #定义一个全局变量，记录是否该让电机运转。
+
+global run_state#状态值，0为检测笑脸，1为驱动电机前进，2为停止，3为返回
+run_state=0  
 
 face_detection = cv2.CascadeClassifier(detection_model_path)
 emotion_classifier = load_model(emotion_model_path, compile=False)
@@ -88,10 +96,11 @@ video_capture = cv2.VideoCapture(0)
 runtimer()
 #定时器函数
 threading.Thread(target=job2).start()
-while True: 
+while (run_state==0): 
     if emotionnum>10:
         print("检测到笑")
-        flag=1;
+        flag=1
+        run_state=1
         time.sleep(3)
 #检测到微笑则停止检测3秒，防止反复触发。
 
@@ -135,3 +144,23 @@ while True:
     cv2.imshow('emotion_classifier', bgr_image)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+if(run_state==1): 
+    GPIO.output(20, GPIO.HIGH)
+    print('正在前进')
+    time.sleep(2)
+    GPIO.output(20, GPIO.LOW)
+    print('已经停止')
+    run_state=2
+
+while (run_state==2): 
+    print('正在检测是否有人离开椅子（为方便测试现在是检测是否有人坐在椅子上）')
+    if(GPIO.input(16)==1):
+        run_state=3
+
+while (run_state==3): 
+    print('正在后退')
+    GPIO.output(21, GPIO.HIGH)
+    time.sleep(2) 
+    GPIO.output(21, GPIO.LOW)
+    run_state=4
+    print("测试结束")

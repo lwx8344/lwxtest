@@ -10,19 +10,12 @@ import RPi.GPIO as GPIO #以上为使用的库
 Trig_Pin = 23  #超声波发送脚
 Echo_Pin = 24  #超声波接收检测脚
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(18,GPIO.OUT)
-pwm = GPIO.PWM(18,10000)
-pwm.start(97)
 GPIO.setup(Trig_Pin, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(Echo_Pin, GPIO.IN)
 GPIO.setup(20,GPIO.OUT)
 GPIO.setup(21,GPIO.OUT)
-GPIO.setup(19,GPIO.OUT)
-GPIO.setup(26,GPIO.OUT)
 GPIO.output(20, GPIO.LOW)
 GPIO.output(21, GPIO.LOW)
-GPIO.output(19, GPIO.LOW)
-GPIO.output(26, GPIO.LOW)
 GPIO.setup(16,GPIO.IN)
 
 address = ('0.0.0.0',9999)#接收所有ip发过来的udp信息。
@@ -52,11 +45,9 @@ def checkdist():
 
 while (run_state==1): 
     GPIO.output(20, GPIO.HIGH)
-    GPIO.output(19, GPIO.HIGH)
     print('距离:', checkdist(), 'cm')
     if(checkdist()<30): 
         GPIO.output(20, GPIO.LOW)
-        GPIO.output(19, GPIO.LOW)
         run_state=2
 
 while (run_state==2): 
@@ -66,11 +57,9 @@ while (run_state==2):
 
 while (run_state==3): 
     print('距离:', checkdist(), 'cm')
-    GPIO.output(21, GPIO.HIGH)
-    GPIO.output(26, GPIO.HIGH)
+    GPIO.output(21, GPIO.high)
     if(checkdist()>100): 
             GPIO.output(21, GPIO.LOW)
-            GPIO.output(26, GPIO.LOW)
             run_state=4
             print("测试结束")
 

@@ -58,28 +58,28 @@ def job1():
 #表情标志位清0函数
 
 def job2():
-    print("检测线程已开")
-    global flag
-    while True:
-        data,address=s.recvfrom(2048)
-        if not data:
-            break
-        print("从该IP地址发来消息：",address)
-        print("消息内容：",data.decode())
-        if data.decode()!="happy" and flag==1:
-            print("只有服务端检测到笑容")
-        if data.decode()=="happy" and flag!=1:
-            print("只有客户端检测到笑容")
-        if data.decode()=="happy" and flag==1:
-            print("两把椅子均检测到笑容，开始动")
+	print("检测线程已开")
+	global flag
+	while True:
+		data,address=s.recvfrom(2048)
+		if not data:
+			break
+		print("从该IP地址发来消息：",address)
+		print("消息内容：",data.decode())
+	if data.decode()!="happy" and flag==1:
+			print("只有服务端检测到笑容")
+	if data.decode()=="happy" and flag!=1:
+			print("只有客户端检测到笑容")
+		if data.decode()=="happy" and flag==1:
+			print("两把椅子均检测到笑容，开始动")
 #一直检测是否两台椅子都检测到微笑
 
 def job_task1():
-    threading.Thread(target=job1).start()
+	threading.Thread(target=job1).start()
 #开一个新的线程执行清0任务
 
 def runtimer():
-    schedule.every(3).seconds.do(job_task1)
+	schedule.every(3).seconds.do(job_task1)
 #每三秒进行一次定时给表情标志位清0任务
 
 
@@ -96,71 +96,73 @@ video_capture = cv2.VideoCapture(0)
 runtimer()
 #定时器函数
 threading.Thread(target=job2).start()
-while (run_state==0): 
-    if emotionnum>10:
-        print("检测到笑")
-        flag=1
-        run_state=1
-        time.sleep(3)
-#检测到微笑则停止检测3秒，防止反复触发。
+while(1):
+	while (run_state==0): 
+		if emotionnum>10:
+			print("检测到笑")
+			flag=1
+			run_state=1
+			time.sleep(3)
+	#检测到微笑则停止检测3秒，防止反复触发。
 
-    schedule.run_pending()#定时器相关函数
+		schedule.run_pending()#定时器相关函数
 
-    bgr_image = video_capture.read()[1]
-    gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
-    rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2RGB)
-    faces = face_detection.detectMultiScale(gray_image, 1.3, 5)
-    for face_coordinates in faces:
-        x1,y1,width,height = face_coordinates
-        x1,y1,x2,y2 = x1,y1,x1+width,y1+height
-        #x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
-        gray_face = gray_image[y1:y2, x1:x2]
-        try:
-            gray_face = cv2.resize(gray_face, (emotion_target_size))
-        except:
-            continue
-       
-        gray_face = preprocess_input(gray_face, True)
-        gray_face = np.expand_dims(gray_face, 0)
-        gray_face = np.expand_dims(gray_face, -1)
-        emotion_prediction = emotion_classifier.predict(gray_face)
-        #emotion_probability = np.max(emotion_prediction)
-        emotion_label_arg = np.argmax(emotion_prediction)
-        emotion_text = emotion_labels[emotion_label_arg]
-        emotion_window.append(emotion_text)
-        if len(emotion_window) > frame_window:
-            #emotion_window.pop(0)
-            if emotion_window.pop(0) == "happy":
-                emotionnum=emotionnum+1
-                print('当前记录的笑容个数：',emotionnum)
-        try:
-            emotion_text = mode(emotion_window)
-        except:
-            continue
-        color = (0,0,255)
-        cv2.rectangle(rgb_image,(x1,y1),(x2,y2),(0,0,255),2)
-        cv2.putText(rgb_image,emotion_text,(x1,y1),cv2.FONT_HERSHEY_SIMPLEX,2,(0,0,255),2,cv2.LINE_AA)
-    bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
-    cv2.imshow('emotion_classifier', bgr_image)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-if(run_state==1): 
-    GPIO.output(20, GPIO.HIGH)
-    print('正在前进')
-    time.sleep(2)
-    GPIO.output(20, GPIO.LOW)
-    print('已经停止')
-    run_state=2
+		bgr_image = video_capture.read()[1]
+		gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
+		rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2RGB)
+		faces = face_detection.detectMultiScale(gray_image, 1.3, 5)
+		for face_coordinates in faces:
+			x1,y1,width,height = face_coordinates
+			x1,y1,x2,y2 = x1,y1,x1+width,y1+height
+			#x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
+			gray_face = gray_image[y1:y2, x1:x2]
+			try:
+				gray_face = cv2.resize(gray_face, (emotion_target_size))
+			except:
+				continue
+		   
+			gray_face = preprocess_input(gray_face, True)
+			gray_face = np.expand_dims(gray_face, 0)
+			gray_face = np.expand_dims(gray_face, -1)
+			emotion_prediction = emotion_classifier.predict(gray_face)
+			#emotion_probability = np.max(emotion_prediction)
+			emotion_label_arg = np.argmax(emotion_prediction)
+			emotion_text = emotion_labels[emotion_label_arg]
+			emotion_window.append(emotion_text)
+			if len(emotion_window) > frame_window:
+				#emotion_window.pop(0)
+				if emotion_window.pop(0) == "happy":
+					emotionnum=emotionnum+1
+					print('当前记录的笑容个数：',emotionnum)
+			try:
+				emotion_text = mode(emotion_window)
+			except:
+				continue
+			color = (0,0,255)
+			cv2.rectangle(rgb_image,(x1,y1),(x2,y2),(0,0,255),2)
+			cv2.putText(rgb_image,emotion_text,(x1,y1),cv2.FONT_HERSHEY_SIMPLEX,2,(0,0,255),2,cv2.LINE_AA)
+		bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
+		cv2.imshow('emotion_classifier', bgr_image)
+		if cv2.waitKey(1) & 0xFF == ord('q'):
+			break
+	if(run_state==1): 
+		GPIO.output(20, GPIO.HIGH)
+		print('正在前进')
+		time.sleep(2)
+		GPIO.output(20, GPIO.LOW)
+		print('已经停止')
+		run_state=2
 
-while (run_state==2): 
-    print('正在检测是否有人离开椅子（为方便测试现在是检测是否有人坐在椅子上）')
-    if(GPIO.input(16)==1):
-        run_state=3
+	while (run_state==2): 
+		print('正在检测是否有人离开椅子（为方便测试现在是检测是否有人坐在椅子上）')
+		if(GPIO.input(16)==1):
+			run_state=3
 
-while (run_state==3): 
-    print('正在后退')
-    GPIO.output(21, GPIO.HIGH)
-    time.sleep(2) 
-    GPIO.output(21, GPIO.LOW)
-    run_state=4
-    print("测试结束")
+	if (run_state==3): 
+		print('正在后退')
+		GPIO.output(21, GPIO.HIGH)
+		time.sleep(2) 
+		GPIO.output(21, GPIO.LOW)
+		run_state=0
+		time.sleep(2)
+		print("测试结束")

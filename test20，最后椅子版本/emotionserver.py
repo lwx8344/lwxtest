@@ -101,7 +101,7 @@ runtimer()
 threading.Thread(target=job2).start()
 while(1):
 	while (run_state==0): 
-		if emotionnum>4:
+		if emotionnum>:
 			print("检测到笑")
 			flag=1
 			run_state=1
@@ -152,9 +152,9 @@ while(1):
 		GPIO.output(21, GPIO.HIGH)
 		print('正在前进,距离:', checkdist(), 'cm')
 		if(checkdist()<20): #检测到足够近时
-                    GPIO.output(21, GPIO.LOW)
-                    print('已经停止')
-                    run_state=2
+			GPIO.output(21, GPIO.LOW)
+			print('已经停止')
+			run_state=2
 
 	while (run_state==2): 
 		print('正在检测是否有人离开椅子')
@@ -165,7 +165,7 @@ while(1):
 		print('正在后退，距离:', checkdist(), 'cm')
 		GPIO.output(20, GPIO.HIGH)
 		if(checkdist()>100): 
-                    GPIO.output(20, GPIO.LOW)
-                    print("停止，重新进行笑容识别")
-                    run_state=0
+			GPIO.output(20, GPIO.LOW)
+			print("停止，重新进行笑容识别")
+			run_state=0
 		

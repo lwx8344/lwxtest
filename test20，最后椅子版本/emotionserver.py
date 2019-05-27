@@ -32,8 +32,7 @@ detection_model_path = 'trained_models/facemodel/haarcascade_frontalface_default
 #emotion_model_path = 'trained_models/float_models/fer2013_mini_XCEPTION.33-0.65.hdf5'
 emotion_model_path = 'trained_models/float_models/fer2013_mini_XCEPTION.34-0.65.hdf5'
 #以上为使用的算法模型
-emotion_labels = {0:'angry',1:'disgust',2:'fear',3:'happy',
-                4:'sad',5:'surprise',6:'neutral'}
+emotion_labels = {0:'angry',1:'disgust',2:'fear',3:'happy',4:'sad',5:'surprise',6:'neutral'}
 
 
 global emotionnum
@@ -54,23 +53,23 @@ emotion_window = []
 frame_window = 10
 
 def checkdist():
-    GPIO.output(Trig_Pin, GPIO.HIGH)
-    time.sleep(0.00015)
-    GPIO.output(Trig_Pin, GPIO.LOW)
-    while not GPIO.input(Echo_Pin):
-        pass
-    t1 = time.time()
-    while GPIO.input(Echo_Pin):
-        pass
-    t2 = time.time()
-    return (t2 - t1) * 340 * 100 / 2
+	GPIO.output(Trig_Pin, GPIO.HIGH)
+	time.sleep(0.00015)
+	GPIO.output(Trig_Pin, GPIO.LOW)
+	while not GPIO.input(Echo_Pin):
+		pass
+	t1 = time.time()
+	while GPIO.input(Echo_Pin):
+		pass
+	t2 = time.time()
+	return (t2 - t1) * 340 * 100 / 2
 
 
 def job1():
-    global emotionnum
-    emotionnum=0
-    global flag
-    flag=0
+	global emotionnum
+	emotionnum=0
+	global flag
+	flag=0
 #表情标志位清0函数
 
 def job2():

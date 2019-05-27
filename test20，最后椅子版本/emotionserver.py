@@ -100,7 +100,7 @@ runtimer()
 threading.Thread(target=job2).start()
 while(1):
 	while (run_state==0): 
-		if emotionnum>:
+		if emotionnum>2:
 			print("检测到笑")
 			flag=1
 			run_state=1

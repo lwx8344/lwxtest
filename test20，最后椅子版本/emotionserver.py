@@ -46,6 +46,9 @@ flag = 0
 global run_state#状态值，0为检测笑脸，1为驱动电机前进，2为停止，3为返回
 run_state=0  
 
+global distance#距离值
+distance=0  
+
 face_detection = cv2.CascadeClassifier(detection_model_path)
 emotion_classifier = load_model(emotion_model_path, compile=False)
 emotion_target_size = emotion_classifier.input_shape[1:3]#这里是输入张量的形状
@@ -98,9 +101,10 @@ video_capture = cv2.VideoCapture(0)
 runtimer()
 #定时器函数
 threading.Thread(target=job2).start()
+distance=checkdist()
 while(1):
     while (run_state==0): 
-        if emotionnum>2:
+        if emotionnum>1:
             print("检测到笑")
             flag=1
             run_state=1
@@ -143,10 +147,11 @@ while(1):
         cv2.imshow('emotion_classifier', bgr_image)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+
     while(run_state==1): 
         GPIO.output(21, GPIO.HIGH)
         print('正在前进,距离:', checkdist(), 'cm')
-        if(checkdist()<20): #检测到足够近时
+        if(checkdist()<30): #检测到足够近时
             GPIO.output(21, GPIO.LOW)
             print('已经停止')
             run_state=2

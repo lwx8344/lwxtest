@@ -98,7 +98,7 @@ runtimer()
 threading.Thread(target=job2).start()
 while(1):
 	while (run_state==0): 
-		if emotionnum>10:
+		if emotionnum>2:
 			print("检测到笑")
 			flag=1
 			run_state=1
@@ -146,23 +146,23 @@ while(1):
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			break
 	if(run_state==1): 
-		GPIO.output(20, GPIO.HIGH)
+		GPIO.output(21, GPIO.HIGH)
 		print('正在前进')
-		time.sleep(2)
-		GPIO.output(20, GPIO.LOW)
+		time.sleep(4)
+		GPIO.output(21, GPIO.LOW)
 		print('已经停止')
 		run_state=2
+        time.sleep(2)
 
 	while (run_state==2): 
 		print('正在检测是否有人离开椅子（为方便测试现在是检测是否有人坐在椅子上）')
-		if(GPIO.input(16)==1):
+		if(GPIO.input(16)==0):
 			run_state=3
 
 	if (run_state==3): 
 		print('正在后退')
-		GPIO.output(21, GPIO.HIGH)
-		time.sleep(2) 
-		GPIO.output(21, GPIO.LOW)
+		GPIO.output(20, GPIO.HIGH)
+		time.sleep(4) 
+		GPIO.output(20, GPIO.LOW)
 		run_state=0
-		time.sleep(2)
 		print("测试结束")

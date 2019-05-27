@@ -58,21 +58,7 @@ def job1():
 #表情标志位清0函数
 
 def job2():
-	print("检测线程已开")
-	global flag
-	while True:
-		data,address=s.recvfrom(2048)
-		if not data:
-			break
-		print("从该IP地址发来消息：",address)
-		print("消息内容：",data.decode())
-	if data.decode()!="happy" and flag==1:
-			print("只有服务端检测到笑容")
-	if data.decode()=="happy" and flag!=1:
-			print("只有客户端检测到笑容")
-		if data.decode()=="happy" and flag==1:
-			print("两把椅子均检测到笑容，开始动")
-#一直检测是否两台椅子都检测到微笑
+	pass
 
 def job_task1():
 	threading.Thread(target=job1).start()
@@ -152,7 +138,7 @@ while(1):
 		GPIO.output(21, GPIO.LOW)
 		print('已经停止')
 		run_state=2
-        time.sleep(2)
+		time.sleep(2)
 
 	while (run_state==2): 
 		print('正在检测是否有人离开椅子（为方便测试现在是检测是否有人坐在椅子上）')
